@@ -1,0 +1,69 @@
+<div id="login" style="margin-top: 120px;">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down" data-aos-duration="1000">
+            <img class="mw-25 mh-25" style="height: 100px; width: auto;" src="../../../assets/img/logo/white_background.svg" >
+        </div>
+        <form id="login-form" class="form" action="" method="post">
+            <h2 class="text-center mb-5 text-dark">Rejestracja</h2><br>
+            <div id="login-row" class="row justify-content-center align-items-top">
+                <div id="login-column" class="col-md-4 mr-4">
+                    <h4 class="text-left text-active">Dane konta:</h4><br>
+                    <div class="form-group">
+                        <label for="email" class="text-primary">Email*:</label>
+                        <input type="email" name="email" id="email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="text-primary">Hasło*:</label>
+                        <input type="password" name="password" id="password" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="repassword" class="text-primary">Powtórz hasło*:</label>
+                        <input type="password" name="repassword" id="repassword" class="form-control">
+                    </div>
+                </div>
+                <div id="profile-column" class="col-md-4">
+                    <h4 class="text-left text-active">Dane użytkownika:</h4><br>
+                    <div class="form-group">
+                        <label for="age" class="text-primary">Wiek* w latach:</label>
+                        <input type="number" name="age" id="age" class="form-control">
+                    </div> 
+                    <div class="form-group">
+                        <label for="username" class="text-primary">Masa ciała* w kg:</label>
+                        <input type="number" name="username" id="username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="height" class="text-primary">Wzrost* w cm:</label>
+                        <input type="number" name="height" id="height" class="form-control">
+                    </div>
+                    <div class="form-group text-primary">
+                        <label for="activity">Aktywność fizyczna*:</label>
+                        <select class="form-control" id="activity">
+                            <option value="1.25">pacjent leżący w łóżku</option>
+                            <option value="1.4">aktywność fizyczna niska</option>
+                            <option value="1.6">aktywność fizyczna umiarkowana</option>
+                            <option value="1.75">aktywny tryb życia</option>
+                            <option value="2">bardzo aktywny tryb życia</option>
+                            <option value="2.3">wyczynowe uprawianie sportu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-check-inline">
+                                <label for="form-check-inline" class="text-primary">Płeć*: </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" name="sex" id="woman" class="form-check-input" value="woman">
+                            <label for="woman" class="form-check-label text-primary">Kobieta</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" name="sex" id="man" class="form-check-insput" value="man">
+                            <label for="man" class="form-check-label text-primary">Mężczyzna</label>
+                        </div>
+                    </div> 
+                </div>
+            </div>            
+            <div class="col-md-16 my-4 text-center ">
+                <input type="submit" name="submit" class="btn btn-outline-primary" value="Zarejestruj się">
+            </div>
+        </form>
+    </div>
+</div>
