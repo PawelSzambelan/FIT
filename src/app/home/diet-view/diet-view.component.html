@@ -1,0 +1,283 @@
+<div class="container" style="margin-top: 80px;">
+    <!-- Przyciski zmiany Dieta - Trening -->
+    <div class="row justify-content-center align-items-center mx-auto w-50">
+        <a class="col-md-6 text-center btn btn-secondary active" style="max-width: 300px;" href="#">Dieta</a>
+        <a class="col-md-6 text-center btn btn-secondary" style="max-width: 300px;" href="#">Trening</a>
+    </div>
+
+    <!-- Przyciski nawigacji między dniami -->
+    <div class="row justify-content-center align-items-center my-4 mx-auto w-50">
+        
+        <div class="col-xs-2 page-item active">
+            <button (click)="previousDay();" class="page-link">&laquo;</button>
+        </div>
+        <div class="col-xs-8 page-item">
+            <a class="page-link" href="#">{{dateService.getFormattedDate(selectedDate)}}</a>
+        </div>
+        <div class="col-xs-2 page-item active">
+            <button (click)="nextDay();" class="page-link">&raquo;</button>
+        </div>
+    </div>
+
+    <!-- Input dodawania posiłku do dnia -->
+    <form id="meal-form" class="form mx-auto w-50" #mealForm="ngForm" (ngSubmit)="OnSubmit(mealForm)">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <input type="text" class="form-control" name="time" #hour="ngModel" [(ngModel)]="newMeal.time" required placeholder="Godzina">
+            </div>
+            <div class="form-group col-md-8">
+                <input type="text" class="form-control" name="name" #weight="ngModel" [(ngModel)]="newMeal.name" required placeholder="Dodaj posiłek">
+            </div>
+            <div class="col">
+                <input type="hidden" class="form-control" name="date" #date="ngModel" [(ngModel)]="newMeal.date" placeholder="Data">
+                <button [disabled]="!mealForm.valid" type="submit" class="btn btn-outline-primary btn-circle">+</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Informacja o ewentualnym niepowodzeniu przy dodawaniu posiłku -->
+    <div *ngIf="isNewMealError" class="row justify-content-center align-items-center">
+        <div class="alert alert-warning">
+            Niepoprawne dane: godzina to np. 9:00, nazwa posiłku może zawierać tylko litery.
+        </div>
+    </div>
+    <!-- Informacja o ewentualnym niepowodzeniu przy usuwaniu posiłku -->
+    <div *ngIf="isDeletedMealError" class="row justify-content-center align-items-center">
+        <div class="alert alert-warning">
+            Błąd przy usuwaniu posiłku.
+        </div>
+    </div>
+
+    <!-- Informacja o spożytych kaloriach w ciagu dnia -->
+    <div class="my-4">
+        <div class="mx-auto my-0 w-50 small">
+            Kalorie: <strong>{{dayNutritions.calories}}</strong> / {{userNutritions.calories}}
+        </div>
+        <div class="progress my-1 mx-auto w-50">
+            <div class="progress-bar" role="progressbar" [ngStyle]="{'width': dayProgress.calories + '%' }" attr.aria-valuenow="{{dayNutritions.calories}}" aria-valuemin="0" attr.aria-valuemax="{{userNutritions.calories}}"></div>
+        </div>
+        <div class="mx-auto my-0 w-50 small">
+            Białka: <strong>{{dayNutritions.protein_grams}}</strong> / {{userNutritions.protein_grams}}
+        </div>
+        <div class="progress my-1 mx-auto w-50">
+            <div class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': dayProgress.protein_grams + '%' }" attr.aria-valuenow="{{dayNutritions.protein_grams}}" aria-valuemin="0" attr.aria-valuemax="{{userNutritions.protein_grams}}"></div>
+        </div>
+        <div class="mx-auto my-0 w-50 small">
+            Tłuszcze: <strong>{{dayNutritions.fat_grams}}</strong> / {{userNutritions.fat_grams}}
+        </div>
+        <div class="progress my-1 mx-auto w-50">
+            <div class="progress-bar bg-info" role="progressbar" [ngStyle]="{'width': dayProgress.fat_grams + '%' }" aria-valuemin="0" attr.aria-valuemax="{{userNutritions.fat_grams}}"></div>
+        </div>
+        <div class="mx-auto my-0 w-50 small">
+            Węglowodany: <strong>{{dayNutritions.carbohydrates_grams}}</strong> / {{userNutritions.carbohydrates_grams}}
+        </div>
+        <div class="progress my-1 mx-auto w-50">
+            <div class="progress-bar bg-warning" role="progressbar" [ngStyle]="{'width': dayProgress.carbohydrates_grams + '%' }" attr.aria-valuenow="{{dayNutritions.carbohydrates_grams}}" aria-valuemin="0" attr.aria-valuemax="{{userNutritions.carbohydrates_grams}}"></div>
+        </div>
+    </div>
+    
+    <!-- Karty z kolejnymi posiłkami -->
+    <div *ngFor="let meal of meals" class="row justify-content-center align-items-center mb-4 Small">
+        <div class="card border-secondary mb-3 card-block w-50">
+            <div class="card-header">
+                <div class="d-flex">
+                    <div class="p-1">
+                        <span id="{{meal.id_meal}}" hidden></span>
+                        <h5><span class="text-primary">{{meal.time}}</span> {{meal.name}}</h5>
+                        <p>{{ getNutritionsForMeal(meal.id_meal) }}</p>
+                    </div>
+                    <div class="p-2 ml-auto">
+                        <button class="btn btn-outline-primary btn-circle btn-lg mr-3" title="Dodaj produkt"  data-toggle="modal" data-target="#chooseProductModalCenter" (click)="this.chosenMealId = meal.id_meal; searchingPattern=''; loadProductsByPattern()">+</button>
+                        <button (click)="deleteMeal(meal.id_meal);" class="btn btn-outline-primary btn-circle btn-lg" title="Usuń posiłek">-</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-4">
+                <!-- Produkty w posiłku -->
+                <div *ngFor="let product of productsInMeal(meal.id_meal)">
+                    <div class="d-flex">
+                        <div class="p-1">
+                            <h6>{{product.name}} {{product.amount}}g</h6>
+                            <p>{{ getNutritionsForProduct(product.id_meal_product) }}</p>
+                        </div>
+                        <div class="p-1 ml-auto">
+                            <!-- GUZIK DO EDYCJI ILOŚĆ -->
+                            <!-- <button (click)="editProduct(product.id_meal_product);" class="btn btn-outline-secondary btn-circle">???</button> -->
+                            <button (click)="deleteProduct(product.id_meal_product);" class="btn btn-outline-secondary btn-circle">-</button>
+                        </div>
+                    </div>
+                    <hr class="p-0">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- TO SIĘ JESZCZE PRZYDA!
+    
+    Wiersz na posiłek BĘDZIE POWTARZANY W CAŁOŚCI DLA KAŻDEGO KOLEJNEGO POSŁKU 
+    <div class="row justify-content-center align-items-center mb-4">
+
+       Karta posiłku 
+        <div class="card border-secondary mb-3 card-block w-50">
+
+            Nagłówek posiłku 
+            <div class="card-header">
+                <div class="d-flex">
+                    <div class="p-2">
+                        <h4><span class="text-primary">8:00</span> Śniadanie</h4>
+                        <p>400kcal 4.0g 4.0g 4.0g</p>
+                    </div>
+                    <div class="p-2 ml-auto">
+                        <a  href="#" class="btn btn-outline-primary btn-circle btn-lg mr-3" title="Dodaj produkt">+</a>
+                        <a  href="#" class="btn btn-outline-primary btn-circle btn-lg" title="Usuń posiłek">-</a>
+                    </div>
+                </div>
+            </div>
+
+            Produkty w posiłku 
+            <div class="card-body px-4">
+                <div class="d-flex">
+                    <div class="p-1">
+                        <h6>Płatki owsiane 50g</h6>
+                        <p>200kcal 4.0g 4.0g 4.0g</p>
+                    </div>
+                    <div class="p-1 ml-auto">
+                        <a  href="#" class="btn btn-outline-secondary btn-circle">-</a>
+                    </div>
+                </div>
+                <hr class="p-0">
+                <div class="d-flex">
+                    <div class="p-1">
+                        <h6>Truskawki 150g</h6>
+                        <p>200kcal 4.0g 4.0g 4.0g</p>
+                    </div>
+                    <div class="p-1 ml-auto">
+                        <a  href="#" class="btn btn-outline-secondary btn-circle">-</a>
+                    </div>
+                </div>
+                <hr class="p-0">
+                <div class="d-flex">
+                    <div class="p-1">
+                        <h6>Banan 100g</h6>
+                        <p>50kcal 1.0g 1.0g 1.0g</p>
+                    </div>
+                    <div class="p-1 ml-auto">
+                        <a  href="#" class="btn btn-outline-secondary btn-circle">-</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+</div>
+
+<!-- choosing product to add to meal modal  -->
+<div class="modal fade" id="chooseProductModalCenter" tabindex="-1" role="dialog" aria-labelledby="chooseProductModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="chooseProductModalLongTitle">Dodaj produkt do posiłku</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <input id="patternInput" type="text" class="form-control" name="pattern"  [(ngModel)]="searchingPattern" required placeholder="Produkt" autocomplete="off">
+                </div>
+                <div class="form-group col-md-4">
+                    <button (click)="loadProductsByPattern()" class="btn btn-primary btn-search btn-block">Szukaj</button>
+                </div>
+            </div>
+            <hr/>  
+
+            <div *ngFor="let product of products">
+                        <div class="form-row"> 
+                            <div class="form-group col-md-6">
+                                <label class="my-1 mr-2">{{product.name}}</label>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <input #reqQuantity type="number" value="1" class="form-control" placeholder="Ilość" aria-label="Ilość" aria-describedby="basic-addon2">                                             
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="my-1 mr-2">g.</label>
+                            </div>
+                            
+                            <div class="form-group col-md-2">
+                                <button (click)="addProductToMeal(chosenMealId,product.id_product,reqQuantity.value)" class="btn btn-outline-primary btn-block" data-dismiss="modal">Dodaj</button>
+                            </div>      
+
+                        </div>     
+                <hr/>              
+            </div>
+        </div>
+        <div class="modal-footer text-center" >            
+                    Nie znalazłeś odpowiedniego produktu?
+                    <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#addProductModalCenter" > Dodaj własny!</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- adding product modal -->
+  <div class="modal fade" id="addProductModalCenter" tabindex="-1" role="dialog" aria-labelledby="addModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLongTitle">Zdefiniuj produkt</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <form id="product-form" [(ngModel)]="customProduct">
+                <div class="form-group">
+                  <label>Nazwa produktu</label>
+                  <input [(ngModel)]="customProduct.name" name="name" type="text" class="form-control" id="productNameInput" placeholder="Wpisz nazwę produktu">
+                </div>
+                <div class="form-group">
+                  <label>Producent</label>
+                  <input [(ngModel)]="customProduct.producer" name="producer" type="text" class="form-control" id="productProducer" placeholder="Wpisz producenta produktu">
+                </div>
+                <hr>
+                <strong>Wartości odżywcze (na 100g):</strong>
+                <div class="row">
+                    <div class="col m-1">
+                      <input [(ngModel)]="customProduct.calories" name="calories" type="number" min="0" class="form-control" placeholder="Kalorie">
+                      <small  class="form-text text-muted">Kalorie (kcal)</small>
+    
+                    </div>
+                    <div class="col m-1">
+                      <input [(ngModel)]="customProduct.fat_grams" name="fat_grams" type="number" min="0" max="100" class="form-control" placeholder="Tłuszcze (g)">
+                      <small  class="form-text text-muted">Tłuszcze (g)</small>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col m-1">
+                      <input [(ngModel)]="customProduct.carbohydrates_grams" name="carbohydrates_grams" type="number" min="0" max="100" class="form-control" placeholder="Węglowodany (g)">
+                      <small  class="form-text text-muted">Węglowodany (g)</small>
+                    </div>
+                    <div class="col m-1">
+                      <input [(ngModel)]="customProduct.protein_grams" name="protein_grams" type="number" min="0" max="100" class="form-control" placeholder="Białka (g)">
+                      <small  class="form-text text-muted">Białka (g)</small>
+                    </div>
+                  </div>
+              </form>
+        </div>
+        <div class="modal-footer text-center">             
+                <button type="submit" (click)="addCustomProduct()" data-dismiss="modal" class="btn btn-primary">Dodaj własny produkt</button>     
+        </div>
+      </div>
+    </div>
+  </div>

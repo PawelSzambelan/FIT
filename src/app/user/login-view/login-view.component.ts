@@ -15,6 +15,7 @@ export class LoginViewComponent implements OnInit {
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() {
+    
   }
 
   OnSubmit(email, password) {

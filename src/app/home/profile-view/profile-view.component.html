@@ -1,0 +1,191 @@
+<div class="container" style="margin-top: 100px; position: relative; ">
+    <div class="row" style="justify-content: center;">
+
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+            <div class="panel panel-info">
+                <div class="panel-heading text-center panel-relative">
+                    <h3 class="panel-title">{{user.email}}</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-md-9 col-lg-9 mt-4">
+                            <table class="table table-user-information">
+                                <tbody>
+                                <tr>
+                                    <td>Płeć:</td>
+                                    <td *ngIf="user.gender == 'FEMALE'; else elseBlock">Kobieta</td>
+                                    <ng-template #elseBlock>
+                                        <td>Mężczyzna</td>
+                                    </ng-template>
+                                </tr>
+                                <tr>
+                                    <td>Wiek:</td>
+                                    <td>{{user.age}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Waga:</td>
+                                    <td>{{user.weight}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Wzrost:</td>
+                                    <td>{{user.height}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Aktywność fizyczna:</td>
+                                    <td>{{activity_level[user.id_activity_level - 1].name}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+
+                            <a href="/home/profileEdit" class="btn btn-primary">Edytuj dane</a>
+                            <a href="/home" class="btn btn-primary" style=" float: right;">Powrót</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+            <div class="panel panel-info">
+                <div class="panel-heading text-lg-left panel-relative">
+                    <h3 class="panel-title">Twoje cele:</h3><br>
+                    <h5 class="panel-title">Dodaj nowy cel</h5>
+
+                    <!-- Informacja o ewentualnym niepowodzeniu przy dodawaniu celu -->
+                    <div *ngIf="isNewTargetError" class="row justify-content-left align-items-left">
+                        <div class="alert alert-warning">
+                            Niepoprawne dane.
+                        </div>
+                    </div>
+
+
+                    <!-- Input dodawania celu-->
+                    <form id="target-form" #targetForm="ngForm" (ngSubmit)="OnSubmit(targetForm)">
+                        <div class="form-row">
+                            <div class="form-group col-lg-4">
+                                <input type="number" class="form-control" name="weight" #weight="ngModel"
+                                       [(ngModel)]="newTarget.weight"
+                                       required placeholder="Docelowa waga">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="dd-mm-yyyy"
+                                           name="date" [(ngModel)]="newTarget.date" ngbDatepicker
+                                           [footerTemplate]="footerTemplate"
+                                           #date="ngbDatepicker">
+                                    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary fa fa-calendar" (click)="date.toggle()"
+                                                type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-template #footerTemplate>
+                                <hr class="my-0">
+                                <button class="btn btn-primary btn-sm m-2 float-left"
+                                        (click)="newTarget.date = today; date.close()">
+                                    Today
+                                </button>
+                                <button class="btn btn-secondary btn-sm m-2 float-right" (click)="date.close()">Close
+                                </button>
+                            </ng-template>
+
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-outline-primary btn-circle">+</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <!--<div class="panel-body">-->
+                <!--<div class="col-md-12 col-lg-12">-->
+
+
+                <!--<div class="row">-->
+                <!--<div class="row col-2">-->
+                <!--Waga:-->
+                <!--</div>-->
+                <!--<div class="col-1">-->
+                <!--Data:-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<table class="table table-user-information">-->
+                <!--<tbody>-->
+                <!--<tr *ngFor="let target of targets" class="row justify-content-left align-items-center">-->
+                <!--<div class="row">-->
+                <!--<td>{{target.weight}}</td>-->
+                <!--<td>{{target.date}}</td>-->
+                <!--<td>-->
+                <!--<button (click)="deleteTarget(target.id_target);"-->
+                <!--class="btn btn-outline-primary btn-circle" title="Usuń posiłek">- -->
+                <!--</button>-->
+                <!--</td>-->
+                <!--<td>-->
+                <!--<button (click)="deleteTarget(target.id_target);"-->
+                <!--class="btn btn-outline-primary btn-block" title="Wykres">Pokaż wykres-->
+                <!--</button>-->
+                <!--</td>-->
+                <!--</div>-->
+                <!--</tr>-->
+
+                <!--</tbody>-->
+                <!--</table>-->
+                <!--</div>-->
+
+                <!--</div>-->
+
+                <table class="table" style="text-align: center">
+                    <thead>
+                    <tr>
+                        <th scope="col">Waga</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Usuń</th>
+                        <!--<th scope="col">Wykresy</th>-->
+                    </tr>
+                    </thead>
+                    <tbody *ngFor="let target of targets">
+                    <tr>
+                        <th scope="row">{{target.weight}}</th>
+                        <td>{{target.date}}</td>
+                        <td><button (click)="deleteTarget(target.id_target);"
+                                    class="btn btn-outline-primary btn-circle" title="Usuń posiłek">-
+                        </button></td>
+                        <!--<td><button (click)="deleteTarget(target.id_target);"-->
+                                    <!--class="btn btn-outline-primary btn-block" title="Wykres">Pokaż wykres-->
+                        <!--</button></td>-->
+                    </tr>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row" style="justify-content: center;">
+        <!--<div style="display: block">-->
+            <canvas baseChart
+                    [datasets]="lineChartData"
+                    [labels]="lineChartLabels"
+                    [options]="lineChartOptions"
+                    [legend]="lineChartLegend"
+                    [chartType]="lineChartType">
+            </canvas>
+        <!--</div>-->
+    </div>
+
+    <!--<div class="row" style="justify-content: center;">-->
+    <!--<canvas id="myChart" height="400" width="800"></canvas>-->
+
+    <!--</div>-->
+
+</div>
+<!--<script src="https://cdn.jsdelivr.net/npm/chart.js@2.2.3"></script>-->

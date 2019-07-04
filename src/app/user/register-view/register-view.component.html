@@ -3,66 +3,65 @@
         <div class="text-center mb-5" data-aos="fade-down" data-aos-duration="1000">
             <img class="mw-25 mh-25" style="height: 100px; width: auto;" src="../../../assets/img/logo/white_background.svg" >
         </div>
-        <form id="login-form" class="form" action="" method="post">
+        <form id="login-form" class="form" #registerForm="ngForm" (ngSubmit)="OnSubmit(registerForm)">
             <h2 class="text-center mb-5 text-dark">Rejestracja</h2><br>
+            <div *ngIf="isRegisterError" id="login-row" class="row justify-content-center align-items-center">
+                <div class="alert alert-warning">
+                    Użytkownik już istnieje.
+                </div>
+            </div>
             <div id="login-row" class="row justify-content-center align-items-top">
+
                 <div id="login-column" class="col-md-4 mr-4">
                     <h4 class="text-left text-active">Dane konta:</h4><br>
                     <div class="form-group">
                         <label for="email" class="text-primary">Email*:</label>
-                        <input type="email" name="email" id="email" class="form-control">
+                        <input type="email" name="email" id="email" class="form-control validate" #email="ngModel" [(ngModel)]="user.email" required [pattern]="emailPattern">
+                        <label *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-warning mt-3 p-2" data-error="">Niepoprawny email.</label>
                     </div>
                     <div class="form-group">
                         <label for="password" class="text-primary">Hasło*:</label>
-                        <input type="password" name="password" id="password" class="form-control">
+                        <input type="password" name="password" id="password" class="form-control validate" #password="ngModel" [(ngModel)]="user.password" required [pattern]="passwordPattern">
+                        <label *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-warning mt-3 p-2" data-error="">Hasło musi zawierać minimum 4-20 znaków, dużą i małą literę oraz cyfrę.</label>
                     </div>
                     <div class="form-group">
                         <label for="repassword" class="text-primary">Powtórz hasło*:</label>
-                        <input type="password" name="repassword" id="repassword" class="form-control">
+                        <input type="password" name="repassword" id="repassword" class="form-control validate" #repassword="ngModel" [(ngModel)]="user.repassword" required>
+                        <label *ngIf="password.value !== repassword.value && (repassword.dirty || repassword.touched)"  class="alert alert-warning mt-3 p-2" data-error="">Hasła muszą do siebie pasować.</label>
                     </div>
                 </div>
+
                 <div id="profile-column" class="col-md-4">
                     <h4 class="text-left text-active">Dane użytkownika:</h4><br>
-                    <div class="form-group">
-                        <label for="age" class="text-primary">Wiek* w latach:</label>
-                        <input type="number" name="age" id="age" class="form-control">
-                    </div> 
-                    <div class="form-group">
-                        <label for="username" class="text-primary">Masa ciała* w kg:</label>
-                        <input type="number" name="username" id="username" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="height" class="text-primary">Wzrost* w cm:</label>
-                        <input type="number" name="height" id="height" class="form-control">
-                    </div>
                     <div class="form-group text-primary">
-                        <label for="activity">Aktywność fizyczna*:</label>
-                        <select class="form-control" id="activity">
-                            <option value="1.25">pacjent leżący w łóżku</option>
-                            <option value="1.4">aktywność fizyczna niska</option>
-                            <option value="1.6">aktywność fizyczna umiarkowana</option>
-                            <option value="1.75">aktywny tryb życia</option>
-                            <option value="2">bardzo aktywny tryb życia</option>
-                            <option value="2.3">wyczynowe uprawianie sportu</option>
+                        <label for="gender">Płeć: </label>
+                        <select class="form-control validate" id="gender" *ngIf="genders" required [(ngModel)]="user.gender" name="gender">
+                            <option *ngFor="let gender of genders" [value]="gender.gender">{{gender.name}}</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <div class="form-check form-check-inline">
-                                <label for="form-check-inline" class="text-primary">Płeć*: </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input type="radio" name="sex" id="woman" class="form-check-input" value="woman">
-                            <label for="woman" class="form-check-label text-primary">Kobieta</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input type="radio" name="sex" id="man" class="form-check-insput" value="man">
-                            <label for="man" class="form-check-label text-primary">Mężczyzna</label>
-                        </div>
+                        <label for="age" class="text-primary">Wiek w latach:</label>
+                        <input type="number" name="age" id="age" class="form-control validate" #age="ngModel" [(ngModel)]="user.age" required>
                     </div> 
+                    <div class="form-group">
+                        <label for="weight" class="text-primary">Masa ciała w kg:</label>
+                        <input type="number" name="weight" id="useweightname" class="form-control validate" #weight="ngModel" [(ngModel)]="user.weight" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="height" class="text-primary">Wzrost w cm:</label>
+                        <input type="number" name="height" id="height" class="form-control validate" #height="ngModel" [(ngModel)]="user.height" required>
+                    </div>
+                    <div class="form-group text-primary">
+                        <label for="id_activity_level">Aktywność fizyczna:</label>
+                        <select class="form-control validate" id="id_activity_level" *ngIf="activity_level" required [(ngModel)]="user.id_activity_level" name="id_activity_level">
+                            <option *ngFor="let activity of activity_level" [value]="activity.id_activity_level">{{activity.name}}</option>
+                        </select>
+                    </div>
                 </div>
-            </div>            
+            </div>
+
             <div class="col-md-16 my-4 text-center ">
-                <input type="submit" name="submit" class="btn btn-outline-primary" value="Zarejestruj się">
+                <button [disabled]="!registerForm.valid" type="submit" class="btn btn-outline-primary">Zarejestruj się</button>
             </div>
         </form>
     </div>

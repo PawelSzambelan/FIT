@@ -1,0 +1,84 @@
+<div class="container" style="margin-top: 100px">
+    <div class="row" style="justify-content: center;">
+
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+            <form id="edit-form" class="form" #editingForm="ngForm" (ngSubmit)="OnSubmit(editingForm)">
+                <div class="panel panel-info">
+
+                    <div class="panel-heading">
+
+                        <h3 class="panel-title" >
+
+                            <input type="email" name="email" id="email" class="text-center form-control validate" #email="ngModel"
+                                   [(ngModel)]="user.email" required>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-md-9 col-lg-9  mt-4">
+                                <table class="table table-user-information">
+                                    <tbody>
+                                    <tr>
+                                        <td>Płeć:</td>
+                                        <td>
+                                            <select class="form-control validate" id="gender" *ngIf="genders" required
+                                                    [(ngModel)]="user.gender" name="gender">
+                                                <option *ngFor="let gender of genders"
+                                                        [value]="gender.gender">{{gender.name}}</option>
+                                            </select>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Wiek:</td>
+                                        <td><input type="number" name="age" id="age" class="form-control validate"
+                                                   #age="ngModel" [(ngModel)]="user.age" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Waga:</td>
+                                        <td><input type="number" name="weight" id="useweightname"
+                                                   class="form-control validate" #weight="ngModel"
+                                                   [(ngModel)]="user.weight" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wzrost:</td>
+                                        <td><input type="number" name="height" id="height" class="form-control validate"
+                                                   #height="ngModel" [(ngModel)]="user.height" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aktywność fizyczna:</td>
+                                        <td>
+                                            <select class="form-control validate" id="id_activity_level"
+                                                    *ngIf="activity_level" required
+                                                    [(ngModel)]="user.id_activity_level" name="id_activity_level">
+                                                <option *ngFor="let activity of activity_level"
+                                                        [value]=activity.id_activity_level>{{activity.name}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <button [disabled]="!editingForm.valid" type="submit" class="btn btn-outline-primary">
+                                    Zatwierdź
+                                </button>
+
+                                <a href="/home/profile" class="btn btn-primary" style=" float: right;">Wróć</a>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

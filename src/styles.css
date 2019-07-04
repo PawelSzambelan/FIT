@@ -4,3 +4,8 @@
     height: 40px;
     width: auto;
 }
+
+.welcome_bg{
+    background-image: url("assets/img/welcome_page/bg_pattern.svg");
+    background-repeat: repeat;
+}

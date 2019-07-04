@@ -3,20 +3,19 @@
         <div class="text-center mb-5" data-aos="fade-down" data-aos-duration="1000">
                 <img class="mw-25 mh-25" style="height: 100px; width: auto;" src="../../../assets/img/logo/white_background.svg" >
         </div>
-        <div *ngIf="isLoginError" id="login-row" class="row justify-content-center align-items-center">
-            <div class="alert alert-warning">
-                Incorrect username or password
-            </div>
-        </div>
         <div id="login-row" class="row justify-content-center align-items-center">
             <div id="login-column" class="col-md-6">
                 <div id="login-box" class="col-md-12">
-                    <form id="login-form" class="form" #loginForm="ngForm" (ngSubmit)="OnSubmit(email.value,password.value)">
+                    <form id="login-form" class="form" #loginForm="ngForm" (ngSubmit)="OnSubmit(email.value, password.value)">
                         <h3 class="text-left">Zaloguj się</h3><br>
+                        <div *ngIf="isLoginError" id="login-row" class="row justify-content-center align-items-center">
+                            <div class="alert alert-warning">
+                                Niepoprawny email lub hasło.
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="email" class="text-primary">Email:</label>
-                            <!-- input type="email" !!! -->
-                            <input type="text" #email ngModel name="email" id="email" class="form-control" required>
+                            <input type="email" #email ngModel name="email" id="email" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="password" class="text-primary">Hasło:</label>
@@ -24,7 +23,6 @@
                         </div>
                         <div class="form-group mb-5">
                             <button [disabled]="!loginForm.valid" type="submit" class="btn btn-outline-primary">Zaloguj</button>
-                            <a href="#" class="text-primary" style="margin-left: 20px;">Zapomniałeś hasła?</a>
                         </div>
                         <div class="text-center mb-5">
                             <p>Nie masz jeszcze konta? <br>
